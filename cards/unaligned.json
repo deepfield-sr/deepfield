@@ -1,0 +1,42 @@
+[
+  {
+    "id": "scout",
+    "name": "Scout",
+    "faction": "unaligned",
+    "type": "ship",
+    "copies": 16,
+    "effects": {
+      "primary": [
+        { "type": "gain-trade", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "viper",
+    "name": "Viper",
+    "faction": "unaligned",
+    "type": "ship",
+    "copies": 4,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "explorer",
+    "name": "Explorer",
+    "faction": "unaligned",
+    "type": "ship",
+    "cost": 2,
+    "copies": 10,
+    "effects": {
+      "primary": [
+        { "type": "gain-trade", "amount": 2 }
+      ],
+      "scrap": [
+        { "type": "gain-combat", "amount": 2 }
+      ]
+    }
+  }
+]

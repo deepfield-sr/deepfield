@@ -1,0 +1,216 @@
+[
+  {
+    "id": "federation-shuttle",
+    "name": "Federation Shuttle",
+    "faction": "trade-federation",
+    "type": "ship",
+    "cost": 1,
+    "copies": 3,
+    "effects": {
+      "primary": [
+        { "type": "gain-trade", "amount": 2 }
+      ],
+      "ally": [
+        { "type": "gain-authority", "amount": 4 }
+      ]
+    }
+  },
+  {
+    "id": "cutter",
+    "name": "Cutter",
+    "faction": "trade-federation",
+    "type": "ship",
+    "cost": 2,
+    "copies": 3,
+    "effects": {
+      "primary": [
+        { "type": "gain-authority", "amount": 4 },
+        { "type": "gain-trade", "amount": 2 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 4 }
+      ]
+    }
+  },
+  {
+    "id": "embassy-yacht",
+    "name": "Embassy Yacht",
+    "faction": "trade-federation",
+    "type": "ship",
+    "cost": 3,
+    "copies": 2,
+    "effects": {
+      "primary": [
+        { "type": "gain-trade", "amount": 2 },
+        { "type": "gain-authority", "amount": 3 },
+        { "type": "if-bases", "atLeast": 2, "effects": [
+          { "type": "draw", "amount": 2 }
+        ] }
+      ]
+    }
+  },
+  {
+    "id": "freighter",
+    "name": "Freighter",
+    "faction": "trade-federation",
+    "type": "ship",
+    "cost": 4,
+    "copies": 2,
+    "effects": {
+      "primary": [
+        { "type": "gain-trade", "amount": 4 }
+      ],
+      "ally": [
+        { "type": "next-ship-on-top" }
+      ]
+    }
+  },
+  {
+    "id": "command-ship",
+    "name": "Command Ship",
+    "faction": "trade-federation",
+    "type": "ship",
+    "cost": 8,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 5 },
+        { "type": "gain-authority", "amount": 4 },
+        { "type": "draw", "amount": 2 }
+      ],
+      "ally": [
+        { "type": "destroy-base", "min": 1 }
+      ]
+    }
+  },
+  {
+    "id": "trade-escort",
+    "name": "Trade Escort",
+    "faction": "trade-federation",
+    "type": "ship",
+    "cost": 5,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 4 },
+        { "type": "gain-authority", "amount": 4 }
+      ],
+      "ally": [
+        { "type": "draw", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "flagship",
+    "name": "Flagship",
+    "faction": "trade-federation",
+    "type": "ship",
+    "cost": 6,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 5 },
+        { "type": "draw", "amount": 1 }
+      ],
+      "ally": [
+        { "type": "gain-authority", "amount": 5 }
+      ]
+    }
+  },
+  {
+    "id": "trading-post",
+    "name": "Trading Post",
+    "faction": "trade-federation",
+    "type": "outpost",
+    "cost": 3,
+    "defense": 4,
+    "copies": 2,
+    "effects": {
+      "primary": [
+        { "type": "choose-one", "options": [
+          [ { "type": "gain-trade", "amount": 1 } ],
+          [ { "type": "gain-authority", "amount": 1 } ]
+        ] }
+      ],
+      "scrap": [
+        { "type": "gain-combat", "amount": 3 }
+      ]
+    }
+  },
+  {
+    "id": "barter-world",
+    "name": "Barter World",
+    "faction": "trade-federation",
+    "type": "base",
+    "cost": 4,
+    "defense": 4,
+    "copies": 2,
+    "effects": {
+      "primary": [
+        { "type": "choose-one", "options": [
+          [ { "type": "gain-trade", "amount": 2 } ],
+          [ { "type": "gain-authority", "amount": 2 } ]
+        ] }
+      ],
+      "scrap": [
+        { "type": "gain-combat", "amount": 5 }
+      ]
+    }
+  },
+  {
+    "id": "defense-center",
+    "name": "Defense Center",
+    "faction": "trade-federation",
+    "type": "outpost",
+    "cost": 5,
+    "defense": 5,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "choose-one", "options": [
+          [ { "type": "gain-combat", "amount": 2 } ],
+          [ { "type": "gain-authority", "amount": 3 } ]
+        ] }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 2 }
+      ]
+    }
+  },
+  {
+    "id": "central-office",
+    "name": "Central Office",
+    "faction": "trade-federation",
+    "type": "base",
+    "cost": 7,
+    "defense": 6,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-trade", "amount": 2 },
+        { "type": "next-ship-on-top" }
+      ],
+      "ally": [
+        { "type": "draw", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "port-of-call",
+    "name": "Port of Call",
+    "faction": "trade-federation",
+    "type": "outpost",
+    "cost": 6,
+    "defense": 6,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-trade", "amount": 3 }
+      ],
+      "scrap": [
+        { "type": "destroy-base" },
+        { "type": "draw", "amount": 1 }
+      ]
+    }
+  }
+]

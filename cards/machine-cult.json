@@ -1,0 +1,192 @@
+[
+  {
+    "id": "trade-bot",
+    "name": "Trade Bot",
+    "faction": "machine-cult",
+    "type": "ship",
+    "cost": 1,
+    "copies": 3,
+    "effects": {
+      "primary": [
+        { "type": "gain-trade", "amount": 1 },
+        { "type": "scrap-cards", "from": "hand-or-discard", "max": 1 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 2 }
+      ]
+    }
+  },
+  {
+    "id": "missile-bot",
+    "name": "Missile Bot",
+    "faction": "machine-cult",
+    "type": "ship",
+    "cost": 2,
+    "copies": 3,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 2 },
+        { "type": "scrap-cards", "from": "hand-or-discard", "max": 1 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 2 }
+      ]
+    }
+  },
+  {
+    "id": "supply-bot",
+    "name": "Supply Bot",
+    "faction": "machine-cult",
+    "type": "ship",
+    "cost": 3,
+    "copies": 3,
+    "effects": {
+      "primary": [
+        { "type": "gain-trade", "amount": 2 },
+        { "type": "scrap-cards", "from": "hand-or-discard", "max": 1 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 2 }
+      ]
+    }
+  },
+  {
+    "id": "battle-station",
+    "name": "Battle Station",
+    "faction": "machine-cult",
+    "type": "outpost",
+    "cost": 3,
+    "defense": 5,
+    "copies": 2,
+    "effects": {
+      "scrap": [
+        { "type": "gain-combat", "amount": 5 }
+      ]
+    }
+  },
+  {
+    "id": "patrol-mech",
+    "name": "Patrol Mech",
+    "faction": "machine-cult",
+    "type": "ship",
+    "cost": 4,
+    "copies": 2,
+    "effects": {
+      "primary": [
+        { "type": "choose-one", "options": [
+          [ { "type": "gain-trade", "amount": 3 } ],
+          [ { "type": "gain-combat", "amount": 5 } ]
+        ] }
+      ],
+      "ally": [
+        { "type": "scrap-cards", "from": "hand-or-discard", "max": 1 }
+      ]
+    }
+  },
+  {
+    "id": "stealth-needle",
+    "name": "Stealth Needle",
+    "faction": "machine-cult",
+    "type": "ship",
+    "cost": 4,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "copy-another-ship" }
+      ]
+    }
+  },
+  {
+    "id": "battle-mech",
+    "name": "Battle Mech",
+    "faction": "machine-cult",
+    "type": "ship",
+    "cost": 5,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 4 },
+        { "type": "scrap-cards", "from": "hand-or-discard", "max": 1 }
+      ],
+      "ally": [
+        { "type": "draw", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "missile-mech",
+    "name": "Missile Mech",
+    "faction": "machine-cult",
+    "type": "ship",
+    "cost": 6,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 6 },
+        { "type": "destroy-base" }
+      ],
+      "ally": [
+        { "type": "draw", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "mech-world",
+    "name": "Mech World",
+    "faction": "machine-cult",
+    "type": "outpost",
+    "cost": 5,
+    "defense": 6,
+    "copies": 1,
+    "effects": {
+      "passive": [
+        { "type": "ally-for-all-factions" }
+      ]
+    }
+  },
+  {
+    "id": "brain-world",
+    "name": "Brain World",
+    "faction": "machine-cult",
+    "type": "outpost",
+    "cost": 8,
+    "defense": 6,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "scrap-cards", "from": "hand-or-discard", "max": 2, "drawForEach": true }
+      ]
+    }
+  },
+  {
+    "id": "machine-base",
+    "name": "Machine Base",
+    "faction": "machine-cult",
+    "type": "outpost",
+    "cost": 7,
+    "defense": 6,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "together", "effects": [
+          { "type": "draw", "amount": 1 },
+          { "type": "scrap-cards", "from": "hand", "min": 1, "max": 1 }
+        ] }
+      ]
+    }
+  },
+  {
+    "id": "junkyard",
+    "name": "Junkyard",
+    "faction": "machine-cult",
+    "type": "outpost",
+    "cost": 6,
+    "defense": 5,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "scrap-cards", "from": "hand-or-discard", "min": 1, "max": 1 }
+      ]
+    }
+  }
+]

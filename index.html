@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Star Realms: you vs Deepfield</title>
+<meta name="description" content="Play Star Realms against Deepfield, an AI that taught itself the game, right in your browser.">
+<meta property="og:title" content="Star Realms: you vs Deepfield">
+<meta property="og:description" content="Play Star Realms (Base Set) against an AI that taught itself the game, AlphaZero style. Runs in your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27 fill=%27%23f0b429%27%3E%E2%98%85%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #15171c;
+    --panel: #1e2128;
+    --line: #2e323b;
+    --text: #e6e8ec;
+    --muted: #9aa1ad;
+    --accent: #f0b429;
+    --button: #2f6fde;
+    --button-text: #ffffff;
+    --tf: #2e6fb7;
+    --blob: #3d8b47;
+    --se: #b8902a;
+    --mc: #b23a3a;
+    --unaligned: #5d6470;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.35 system-ui, "Segoe UI", sans-serif;
+  }
+  header {
+    display: flex;
+    gap: 28px;
+    align-items: baseline;
+    padding: 10px 18px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    font-size: 18px;
+  }
+  header .turn { font-weight: 700; color: var(--accent); }
+  header .result { font-weight: 700; color: var(--accent); }
+  main { display: flex; height: calc(100vh - 47px); }
+  #board { flex: 1; overflow-y: auto; padding: 10px 18px; }
+  aside {
+    width: 450px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--line);
+    background: var(--panel);
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    gap: 12px;
+    overflow-y: auto;
+  }
+  section.zone { border-bottom: 1px solid var(--line); padding: 6px 0 10px; }
+  h2 { font-size: 16px; margin: 4px 0 6px; }
+  h2 .stats { font-weight: 400; color: var(--muted); margin-left: 10px; }
+  h3 { font-size: 13px; margin: 8px 0 4px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; min-height: 20px; }
+  .empty { color: var(--muted); font-style: italic; }
+  .tile {
+    width: 132px;
+    min-height: 74px;
+    border-radius: 7px;
+    padding: 6px 7px;
+    background: var(--unaligned);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    box-shadow: 0 1px 2px #0008;
+  }
+  .tile.trade-federation { background: var(--tf); }
+  .tile.blob { background: var(--blob); }
+  .tile.star-empire { background: var(--se); }
+  .tile.machine-cult { background: var(--mc); }
+  .tile.unknown { background: transparent; border: 2px dashed var(--muted); color: var(--muted); }
+  .tile .name { font-weight: 700; font-size: 14px; }
+  .tile .meta { font-size: 12px; opacity: 0.85; }
+  .tile.small { width: 112px; min-height: 52px; }
+  .tile.mini { width: 90px; min-height: 40px; padding: 4px 6px; gap: 1px; }
+  .tile.mini .name { font-size: 12px; }
+  .tile.mini .meta { font-size: 11px; }
+  .tile.clickable { cursor: pointer; }
+  .tile.clickable:hover { outline: 2px solid var(--accent); }
+  .tile.picked { outline: 3px solid var(--accent); }
+  .tile .ability { display: none; font-size: 12px; white-space: pre-line; }
+  .tile.show-text .ability { display: block; }
+  button {
+    background: var(--button);
+    color: var(--button-text);
+    border: 0;
+    border-radius: 5px;
+    padding: 4px 9px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:disabled { opacity: 0.4; cursor: default; filter: none; }
+  button.secondary { background: #444a55; }
+  .tile button { margin-top: auto; }
+  .buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+  .box { background: #262a33; border-radius: 7px; padding: 9px 10px; }
+  .box h2 { margin-top: 0; }
+  #advice .line { white-space: pre-wrap; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  /* A simulated move: its win rate lines up on the right however long the label. */
+  #advice .line.scored { display: flex; align-items: baseline; gap: 6px; }
+  #advice .line.scored .label { flex: 1; border-bottom: 1px dotted var(--muted); }
+  #advice .line.scored .value { white-space: nowrap; }
+  #advice .line.scored.best .value { font-weight: bold; }
+  #question .text { font-weight: 700; margin-bottom: 8px; color: var(--accent); }
+  .picks { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0; min-height: 26px; }
+  .chip { background: #3a404b; border-radius: 12px; padding: 2px 10px; cursor: pointer; font-size: 13px; }
+  .chip:hover { background: #59606d; }
+  #log {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: pre-wrap;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+  #log .turn { padding: 4px 0; }
+  #log .turn + .turn { border-top: 1px solid var(--line); }
+  #log .turn .heading { font-weight: 700; }
+  #log .turn.latest { color: var(--text); }
+  #log .turn.latest .heading { color: var(--accent); }
+  details { margin-top: 8px; color: var(--muted); }
+  summary { cursor: pointer; }
+  .list { padding: 4px 0 0 14px; }
+  body.busy button, body.busy .tile.clickable { pointer-events: none; opacity: 0.6; }
+  /* On a phone the panel goes under the board, and the page scrolls as one. */
+  @media (max-width: 900px) {
+    header { flex-wrap: wrap; gap: 6px 16px; font-size: 16px; }
+    main { flex-direction: column; height: auto; }
+    #board { overflow-y: visible; padding: 8px 16px; }
+    aside { width: auto; border-left: 0; border-top: 1px solid var(--line); overflow-y: visible; }
+    .tile { width: 112px; }
+    /* The buttons for the whole turn (attack, end turn) stay in reach at the bottom. */
+    #general {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+      padding: 8px 16px;
+      background: var(--panel);
+      border-top: 1px solid var(--line);
+    }
+    #general:empty { display: none; }
+    body { padding-bottom: 56px; }
+  }
+</style>
+</head>
+<body>
+<header id="header">Starting...</header>
+<main>
+  <div id="board"></div>
+  <aside>
+    <div id="advice"></div>
+    <div id="question"></div>
+    <div id="general" class="buttons"></div>
+    <div class="box"><h2>Log</h2><div id="log"></div></div>
+  </aside>
+</main>
+<script src="deepfield.js"></script>
+<script>
+"use strict";
+
+let version = -1;
+let picks = [];
+let current = null;
+
+const FACTIONS = ["trade-federation", "blob", "star-empire", "machine-cult", "unaligned"];
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function button(label, onClick, className) {
+  const b = el("button", className, label);
+  b.addEventListener("click", onClick);
+  return b;
+}
+
+/**
+ * Where the game runs: on this computer, polled over HTTP, or, in the build that runs in the
+ * browser alone, in a worker, which window.deepfield (deepfield.js) talks to.
+ */
+const inBrowser = window.deepfield;
+
+function receive(state) {
+  if (state.version !== version) {
+    version = state.version;
+    picks = [];
+    current = state;
+    document.body.classList.remove("busy");
+    render();
+  }
+}
+
+async function poll() {
+  try {
+    const response = await fetch("/state", { cache: "no-store" });
+    receive(await response.json());
+  } catch (e) {
+    document.getElementById("header").textContent = "The advisor isn't running: start it with gradlew -q advisor-web";
+  }
+  setTimeout(poll, 300);
+}
+
+async function send(text) {
+  if (document.body.classList.contains("busy")) return;
+  document.body.classList.add("busy");
+  if (inBrowser) {
+    inBrowser.send(text);
+  } else {
+    await fetch("/answer", { method: "POST", body: text });
+  }
+}
+
+function meta(card) {
+  const parts = [];
+  if (card.cost > 0) parts.push("cost " + card.cost);
+  if (card.type === "base") parts.push("Base " + card.defense);
+  if (card.type === "outpost") parts.push("Outpost " + card.defense);
+  return parts.join(" · ");
+}
+
+/** A card tile, with buttons for its moves; null draws an unknown card. */
+function tile(card, options = {}) {
+  const size = options.mini ? " mini" : options.small ? " small" : "";
+  if (!card) {
+    const unknown = el("div", "tile unknown" + size);
+    unknown.append(el("div", "name", options.unknownText || "?"));
+    return unknown;
+  }
+  const node = el("div", "tile " + (FACTIONS.includes(card.faction) ? card.faction : "unaligned") + size);
+  if (card.text) node.title = card.name + "\n" + card.text;
+  node.append(el("div", "name", card.name + (options.count > 1 ? " ×" + options.count : "")));
+  const text = meta(card);
+  if (text) node.append(el("div", "meta", text));
+  if (options.copying) node.append(el("div", "meta", "as " + options.copying));
+  for (const move of options.moves || []) {
+    node.append(button(move.label, () => send(move.command)));
+  }
+  if (options.onClick) {
+    node.classList.add("clickable");
+    node.addEventListener("click", options.onClick);
+  } else if (card.text && !canHover) {
+    // Where nothing hovers (a phone), a tap on the card shows its text, without the first line,
+    // which the tile already shows.
+    const ability = el("div", "ability", card.text.split("\n").slice(1).join("\n"));
+    node.append(ability);
+    node.addEventListener("click", event => {
+      if (event.target.tagName !== "BUTTON") node.classList.toggle("show-text");
+    });
+  }
+  if (options.picked) node.classList.add("picked");
+  return node;
+}
+
+/** Whether the pointer can hover, so card text shows on hover rather than on a tap. */
+const canHover = window.matchMedia("(hover: hover)").matches;
+
+function movesFor(zone, cardName) {
+  if (!current || current.question.kind !== "COMMAND") return [];
+  return current.screen.moves.filter(m => m.zone === zone && m.card && m.card.name === cardName);
+}
+
+/** Groups cards by name, keeping their order: [{card, count}]. */
+function grouped(cards) {
+  const groups = [];
+  for (const card of cards) {
+    const found = groups.find(g => g.card.name === card.name);
+    if (found) found.count++;
+    else groups.push({ card, count: 1 });
+  }
+  return groups;
+}
+
+function names(cards) {
+  if (!cards.length) return "nothing";
+  return grouped(cards).map(g => (g.count > 1 ? g.count + " " : "") + g.card.name).join(", ");
+}
+
+function renderHeader(screen) {
+  const header = document.getElementById("header");
+  header.replaceChildren();
+  if (!screen || !screen.started) {
+    header.append(el("span", "turn", "Star Realms: you vs Deepfield"), el("span", null, "No game yet"));
+    return;
+  }
+  header.append(el("span", "turn", "Turn " + screen.turn + ": "
+      + (screen.turnEnding ? "your turn ends" : (screen.yourTurn ? "your" : "their") + " turn")));
+  header.append(el("span", null, "You " + screen.you.authority));
+  header.append(el("span", null, (screen.opponent || "Them") + " " + screen.them.authority));
+  header.append(el("span", null, "Trade " + screen.trade + " · Combat " + screen.combat));
+  if (screen.result) header.append(el("span", "result", screen.result));
+}
+
+function inPlayRow(played, zone) {
+  const row = el("div", "row");
+  if (!played.length) row.append(el("span", "empty", "nothing"));
+  for (const p of played) {
+    row.append(tile(p.card, { copying: p.copying, moves: movesFor(zone, p.card.name) }));
+  }
+  return row;
+}
+
+function listDetails(title, cards, count = cards.length) {
+  const details = el("details");
+  details.append(el("summary", null, title + " (" + count + ")"));
+  details.append(el("div", "list", cards.length < count
+      ? "shown once the cards being asked for are entered"
+      : names(cards)));
+  return details;
+}
+
+function renderBoard(screen) {
+  const board = document.getElementById("board");
+  board.replaceChildren();
+  if (!screen || !screen.started) {
+    board.append(el("p", "empty", "Start a game from the panel on the right."));
+    return;
+  }
+
+  const them = el("section", "zone");
+  const theirStats = el("span", "stats",
+      "hand " + screen.them.handSize
+      + (screen.them.hand.length ? " (known: " + names(screen.them.hand) + ")" : "")
+      + " · deck " + screen.them.deckSize
+      + " · discard " + screen.them.discard.length
+      + " · reshuffles " + screen.them.reshuffles);
+  const themTitle = el("h2", null, screen.opponent || "Them");
+  themTitle.append(theirStats);
+  them.append(themTitle, el("h3", null, "In play"), inPlayRow(screen.them.inPlay, "theirInPlay"));
+  const couldPlay = movesForZone("theirHand");
+  if (couldPlay.length) {
+    them.append(el("h3", null, "Cards they could play"));
+    const row = el("div", "row");
+    const counts = grouped(screen.them.unseen);
+    for (const g of counts) {
+      row.append(tile(g.card, { count: g.count, small: true, moves: movesFor("theirHand", g.card.name) }));
+    }
+    them.append(row);
+  }
+  const unknownRow = movesForZone("unknownRow");
+  if (unknownRow.length) {
+    them.append(el("h3", null, "What they bought (the trade row isn't entered yet)"));
+    const row = el("div", "row");
+    for (const move of unknownRow) {
+      row.append(tile(move.card, { small: true, moves: [move] }));
+    }
+    them.append(row);
+  }
+  them.append(listDetails("Their hand and deck", screen.them.unseen), listDetails("Their discard pile", screen.them.discard));
+  board.append(them);
+
+  const trade = el("section", "zone");
+  const tradeTitle = el("h2", null, "Trade row");
+  tradeTitle.append(el("span", "stats", screen.tradeRowKnown
+      ? screen.tradeDeckSize + " cards left in the trade deck"
+      : "not entered yet: once their first turn ends"));
+  trade.append(tradeTitle);
+  const row = el("div", "row");
+  screen.tradeRow.forEach((card, slot) => row.append(card
+      ? tile(card, { moves: rowMoves(slot) })
+      : tile(null, { unknownText: "New card?" })));
+  const explorer = { name: "Explorer", faction: "unaligned", type: "ship", cost: 2, defense: 0,
+      text: "Unaligned ship, cost 2\n2 trade\nScrap: 2 combat" };
+  row.append(tile(explorer, { count: screen.explorersLeft, moves: movesFor("explorers", "Explorer") }));
+  trade.append(row);
+  if (screen.scrapHeap.length) trade.append(listDetails("Scrap heap", screen.scrapHeap));
+  board.append(trade);
+
+  const you = el("section", "zone");
+  const yourTitle = el("h2", null, "You");
+  yourTitle.append(el("span", "stats",
+      "deck " + screen.you.deckSize
+      + (screen.you.deckTop.length ? " (on top: " + names(screen.you.deckTop) + ")" : "")
+      + " · discard " + screen.you.discard.length
+      + " · reshuffles " + screen.you.reshuffles));
+  you.append(yourTitle, el("h3", null, "In play"), inPlayRow(screen.you.inPlay, "yourInPlay"));
+  you.append(el("h3", null, "Hand"));
+  const hand = el("div", "row");
+  if (!screen.you.hand.length) hand.append(el("span", "empty", "empty"));
+  screen.you.hand.forEach(card => hand.append(card
+      ? tile(card, { moves: movesFor("yourHand", card.name) })
+      : tile(null, { unknownText: "Being asked" })));
+  you.append(hand);
+  you.append(listDetails("Your deck", screen.you.unseen, screen.you.deckSize),
+      listDetails("Your discard pile", screen.you.discard));
+  board.append(you);
+}
+
+function movesForZone(zone) {
+  if (!current || current.question.kind !== "COMMAND") return [];
+  return current.screen.moves.filter(m => m.zone === zone);
+}
+
+/**
+ * The buttons on a trade row card, found by slot since the row can hold two copies of a card:
+ * its moves, or, when the question is which copy was taken, a button to say it was this one.
+ */
+function rowMoves(slot) {
+  const question = current && current.question;
+  if (question && question.kind === "SLOT") {
+    return question.slots.includes(slot) ? [{ label: "This one", command: String(slot + 1) }] : [];
+  }
+  return movesForZone("tradeRow").filter(m => m.slot === slot);
+}
+
+function renderAdvice(screen) {
+  const advice = document.getElementById("advice");
+  advice.replaceChildren();
+  if (!screen || !screen.advice || !screen.advice.length) return;
+  const box = el("div", "box");
+  box.append(el("h2", null, "Advice"));
+  for (const line of screen.advice) box.append(adviceLine(line));
+  advice.append(box);
+}
+
+/**
+ * A line of advice. A simulated move's lines come as "label ...... value" for the console; here
+ * the label and the win rate go in a row instead, so they stay lined up when the label wraps.
+ */
+function adviceLine(line) {
+  const scored = line.match(/^(.*?) \.{3,} (.+)$/);
+  if (!scored) return el("div", "line", line);
+  const row = el("div", "line scored" + (scored[2].startsWith("wins") ? " best" : ""));
+  row.append(el("span", "label", scored[1]), el("span", "value", scored[2]));
+  return row;
+}
+
+function renderQuestion(question, screen) {
+  const panel = document.getElementById("question");
+  panel.replaceChildren();
+  if (question.kind === "COMMAND") {
+    if (screen && screen.decision) {
+      const box = el("div", "box");
+      box.append(el("div", "text", screen.decision));
+      const buttons = el("div", "buttons");
+      for (const option of screen.options) buttons.append(button(option.label, () => send(option.answer)));
+      box.append(buttons);
+      if (screen.theirHandChoices.length) {
+        box.append(el("h3", null, "Or the card from their hand"));
+        const row = el("div", "row");
+        for (const card of screen.theirHandChoices) {
+          row.append(tile(card, { small: true, onClick: () => send(card.name) }));
+        }
+        box.append(row);
+      }
+      panel.append(box);
+    }
+    return;
+  }
+  const box = el("div", "box");
+  box.append(el("div", "text", question.text));
+  if (question.kind === "CARDS") {
+    const chosen = el("div", "picks");
+    if (!picks.length) chosen.append(el("span", "empty", "Click the cards below, in any order."));
+    picks.forEach((card, i) => {
+      const chip = el("span", "chip", card.name + "  ×");
+      chip.title = "Remove";
+      chip.addEventListener("click", () => { picks.splice(i, 1); renderQuestion(question, screen); });
+      chosen.append(chip);
+    });
+    box.append(chosen);
+  }
+  // OK and Cancel go above the cards, so they stay in view however many cards there are.
+  const buttons = el("div", "buttons");
+  buttons.style.margin = "6px 0 10px";
+  if (question.kind === "CARDS") {
+    const ok = button("OK (" + picks.length + "/" + question.count + ")",
+        () => send(picks.map(c => c.name).join(", ")));
+    ok.disabled = picks.length !== question.count;
+    buttons.append(ok);
+  }
+  if (question.kind === "SLOT") {
+    for (const slot of question.slots) buttons.append(button("Slot " + (slot + 1), () => send(String(slot + 1))));
+  }
+  buttons.append(button("Cancel", () => send("cancel"), "secondary"));
+  box.append(buttons);
+  const grid = el("div", "row");
+  for (const card of question.candidates) {
+    grid.append(tile(card, {
+      mini: true,
+      onClick: () => {
+        if (question.kind === "CARD") {
+          send(card.name);
+        } else if (picks.length < question.count) {
+          picks.push(card);
+          renderQuestion(question, screen);
+        }
+      }
+    }));
+  }
+  box.append(grid);
+  panel.append(box);
+}
+
+function renderGeneral(question, screen) {
+  const general = document.getElementById("general");
+  general.replaceChildren();
+  if (question.kind !== "COMMAND" || !screen) return;
+  for (const move of screen.moves.filter(m => m.zone === "general")) {
+    const secondary = move.command.startsWith("undo");
+    general.append(button(move.label, () => send(move.command), secondary ? "secondary" : undefined));
+  }
+}
+
+/**
+ * The log turn by turn: each turn's lines under its heading ("-- Turn 7: Deepfield's turn --"),
+ * a line between turns, and the latest turn brightest, so it stands apart from the one before.
+ */
+function renderLog(log) {
+  const node = document.getElementById("log");
+  node.replaceChildren();
+  const turns = [];
+  for (const line of log) {
+    const heading = line.match(/^-- (Turn .*) --$/);
+    if (heading || !turns.length) turns.push({ heading: heading ? heading[1] : null, lines: [] });
+    if (!heading) turns[turns.length - 1].lines.push(line);
+  }
+  turns.forEach((turn, i) => {
+    const block = el("div", "turn" + (i === turns.length - 1 ? " latest" : ""));
+    if (turn.heading) block.append(el("div", "heading", turn.heading));
+    // Under Deepfield's own heading, its name on every move says nothing more.
+    const deepfields = turn.heading && turn.heading.includes("Deepfield");
+    for (const line of turn.lines) block.append(el("div", null, deepfields ? line.replace(/^Deepfield: /, "") : line));
+    node.append(block);
+  });
+  node.scrollTop = node.scrollHeight;
+}
+
+function render() {
+  const { question, screen, log } = current;
+  if (!question) return;
+  renderHeader(screen);
+  renderBoard(screen);
+  renderAdvice(screen);
+  renderQuestion(question, screen);
+  renderGeneral(question, screen);
+  renderLog(log);
+}
+
+if (inBrowser) {
+  inBrowser.listen(receive);
+} else {
+  poll();
+}
+</script>
+</body>
+</html>

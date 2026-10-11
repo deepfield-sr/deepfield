@@ -1,0 +1,196 @@
+[
+  {
+    "id": "imperial-fighter",
+    "name": "Imperial Fighter",
+    "faction": "star-empire",
+    "type": "ship",
+    "cost": 1,
+    "copies": 3,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 2 },
+        { "type": "opponent-discards", "amount": 1 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 2 }
+      ]
+    }
+  },
+  {
+    "id": "imperial-frigate",
+    "name": "Imperial Frigate",
+    "faction": "star-empire",
+    "type": "ship",
+    "cost": 3,
+    "copies": 3,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 4 },
+        { "type": "opponent-discards", "amount": 1 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 2 }
+      ],
+      "scrap": [
+        { "type": "draw", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "survey-ship",
+    "name": "Survey Ship",
+    "faction": "star-empire",
+    "type": "ship",
+    "cost": 3,
+    "copies": 3,
+    "effects": {
+      "primary": [
+        { "type": "gain-trade", "amount": 1 },
+        { "type": "draw", "amount": 1 }
+      ],
+      "scrap": [
+        { "type": "opponent-discards", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "corvette",
+    "name": "Corvette",
+    "faction": "star-empire",
+    "type": "ship",
+    "cost": 2,
+    "copies": 2,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 1 },
+        { "type": "draw", "amount": 1 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 2 }
+      ]
+    }
+  },
+  {
+    "id": "battlecruiser",
+    "name": "Battlecruiser",
+    "faction": "star-empire",
+    "type": "ship",
+    "cost": 6,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 5 },
+        { "type": "draw", "amount": 1 }
+      ],
+      "ally": [
+        { "type": "opponent-discards", "amount": 1 }
+      ],
+      "scrap": [
+        { "type": "destroy-base" },
+        { "type": "draw", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "dreadnaught",
+    "name": "Dreadnaught",
+    "faction": "star-empire",
+    "type": "ship",
+    "cost": 7,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 7 },
+        { "type": "draw", "amount": 1 }
+      ],
+      "scrap": [
+        { "type": "gain-combat", "amount": 5 }
+      ]
+    }
+  },
+  {
+    "id": "space-station",
+    "name": "Space Station",
+    "faction": "star-empire",
+    "type": "outpost",
+    "cost": 4,
+    "defense": 4,
+    "copies": 2,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 2 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 2 }
+      ],
+      "scrap": [
+        { "type": "gain-trade", "amount": 4 }
+      ]
+    }
+  },
+  {
+    "id": "recycling-station",
+    "name": "Recycling Station",
+    "faction": "star-empire",
+    "type": "outpost",
+    "cost": 4,
+    "defense": 4,
+    "copies": 2,
+    "effects": {
+      "primary": [
+        { "type": "choose-one", "options": [
+          [ { "type": "gain-trade", "amount": 1 } ],
+          [ { "type": "discard-cards", "max": 2, "drawForEach": true } ]
+        ] }
+      ]
+    }
+  },
+  {
+    "id": "war-world",
+    "name": "War World",
+    "faction": "star-empire",
+    "type": "outpost",
+    "cost": 5,
+    "defense": 4,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 3 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 4 }
+      ]
+    }
+  },
+  {
+    "id": "royal-redoubt",
+    "name": "Royal Redoubt",
+    "faction": "star-empire",
+    "type": "outpost",
+    "cost": 6,
+    "defense": 6,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 3 }
+      ],
+      "ally": [
+        { "type": "opponent-discards", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "fleet-hq",
+    "name": "Fleet HQ",
+    "faction": "star-empire",
+    "type": "base",
+    "cost": 8,
+    "defense": 8,
+    "copies": 1,
+    "effects": {
+      "passive": [
+        { "type": "ships-gain-combat", "amount": 1 }
+      ]
+    }
+  }
+]

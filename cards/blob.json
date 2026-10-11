@@ -1,0 +1,190 @@
+[
+  {
+    "id": "blob-fighter",
+    "name": "Blob Fighter",
+    "faction": "blob",
+    "type": "ship",
+    "cost": 1,
+    "copies": 3,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 3 }
+      ],
+      "ally": [
+        { "type": "draw", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "trade-pod",
+    "name": "Trade Pod",
+    "faction": "blob",
+    "type": "ship",
+    "cost": 2,
+    "copies": 3,
+    "effects": {
+      "primary": [
+        { "type": "gain-trade", "amount": 3 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 2 }
+      ]
+    }
+  },
+  {
+    "id": "battle-pod",
+    "name": "Battle Pod",
+    "faction": "blob",
+    "type": "ship",
+    "cost": 2,
+    "copies": 2,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 4 },
+        { "type": "scrap-cards", "from": "trade-row", "min": 1, "max": 1 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 2 }
+      ]
+    }
+  },
+  {
+    "id": "ram",
+    "name": "Ram",
+    "faction": "blob",
+    "type": "ship",
+    "cost": 3,
+    "copies": 2,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 5 }
+      ],
+      "ally": [
+        { "type": "gain-combat", "amount": 2 }
+      ],
+      "scrap": [
+        { "type": "gain-trade", "amount": 3 }
+      ]
+    }
+  },
+  {
+    "id": "blob-destroyer",
+    "name": "Blob Destroyer",
+    "faction": "blob",
+    "type": "ship",
+    "cost": 4,
+    "copies": 2,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 6 }
+      ],
+      "ally": [
+        { "type": "destroy-base" },
+        { "type": "scrap-cards", "from": "trade-row", "max": 1 }
+      ]
+    }
+  },
+  {
+    "id": "battle-blob",
+    "name": "Battle Blob",
+    "faction": "blob",
+    "type": "ship",
+    "cost": 6,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 8 }
+      ],
+      "ally": [
+        { "type": "draw", "amount": 1 }
+      ],
+      "scrap": [
+        { "type": "gain-combat", "amount": 4 }
+      ]
+    }
+  },
+  {
+    "id": "blob-carrier",
+    "name": "Blob Carrier",
+    "faction": "blob",
+    "type": "ship",
+    "cost": 6,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 7 }
+      ],
+      "ally": [
+        { "type": "acquire-free-ship" }
+      ]
+    }
+  },
+  {
+    "id": "mothership",
+    "name": "Mothership",
+    "faction": "blob",
+    "type": "ship",
+    "cost": 7,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 6 },
+        { "type": "draw", "amount": 1 }
+      ],
+      "ally": [
+        { "type": "draw", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "blob-wheel",
+    "name": "Blob Wheel",
+    "faction": "blob",
+    "type": "base",
+    "cost": 3,
+    "defense": 5,
+    "copies": 3,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 1 }
+      ],
+      "scrap": [
+        { "type": "gain-trade", "amount": 3 }
+      ]
+    }
+  },
+  {
+    "id": "the-hive",
+    "name": "The Hive",
+    "faction": "blob",
+    "type": "base",
+    "cost": 5,
+    "defense": 5,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "gain-combat", "amount": 3 }
+      ],
+      "ally": [
+        { "type": "draw", "amount": 1 }
+      ]
+    }
+  },
+  {
+    "id": "blob-world",
+    "name": "Blob World",
+    "faction": "blob",
+    "type": "base",
+    "cost": 8,
+    "defense": 7,
+    "copies": 1,
+    "effects": {
+      "primary": [
+        { "type": "choose-one", "options": [
+          [ { "type": "gain-combat", "amount": 5 } ],
+          [ { "type": "draw-for-each-played", "faction": "blob" } ]
+        ] }
+      ]
+    }
+  }
+]
